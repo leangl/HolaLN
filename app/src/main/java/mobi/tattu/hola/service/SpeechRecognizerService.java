@@ -1,4 +1,4 @@
-package mobi.tattu.hola;
+package mobi.tattu.hola.service;
 
 import android.app.Service;
 import android.content.Context;
@@ -35,7 +35,7 @@ public class SpeechRecognizerService extends Service {
     protected volatile boolean mIsCountDownOn;
     private boolean mIsStreamSolo;
 
-    static final int MSG_RECOGNIZER_START_LISTENING = 1;
+    public static final int MSG_RECOGNIZER_START_LISTENING = 1;
     static final int MSG_RECOGNIZER_CANCEL = 2;
 
     @Override

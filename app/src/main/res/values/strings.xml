@@ -3,4 +3,16 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="category_politica">Politica</string>
+    <string name="category_economia">Economia</string>
+    <string name="category_el_mundo">El mundo</string>
+    <string name="category_opinion">Opinion</string>
+    <string name="category_sociedad">Sociedad</string>
+    <string name="category_buenos_aires">Buenos Aires</string>
+    <string name="category_espectaculos">Espectaculos</string>
+    <string name="category_tecnologia">Tecnologia</string>
+    <string name="category_deportes">Deportes</string>
+    <string name="category_seguridad">Segurirdad</string>
+    <string name="next_label">Siguiente</string>
+
 </resources>

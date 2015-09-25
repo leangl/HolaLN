@@ -1,4 +1,4 @@
-package mobi.tattu.hola;
+package mobi.tattu.hola.ui;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -10,10 +10,12 @@ import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
-public class MainActivity extends AppCompatActivity {
+import mobi.tattu.hola.R;
+import mobi.tattu.hola.service.SpeechRecognizerService;
+
+public class MainActivity extends BaseActivity {
 
     private int mBindFlag;
     private Messenger mServiceMessenger;
