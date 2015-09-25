@@ -22,9 +22,9 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MyService extends Service {
+public class SpeechRecognizerService extends Service {
 
-    private static final String TAG = MyService.class.getSimpleName();
+    private static final String TAG = SpeechRecognizerService.class.getSimpleName();
 
     protected AudioManager mAudioManager;
     protected SpeechRecognizer mSpeechRecognizer;
@@ -50,16 +50,16 @@ public class MyService extends Service {
     }
 
     protected static class IncomingHandler extends Handler {
-        private WeakReference<MyService> mtarget;
+        private WeakReference<SpeechRecognizerService> mtarget;
 
-        IncomingHandler(MyService target) {
-            mtarget = new WeakReference<MyService>(target);
+        IncomingHandler(SpeechRecognizerService target) {
+            mtarget = new WeakReference<SpeechRecognizerService>(target);
         }
 
 
         @Override
         public void handleMessage(Message msg) {
-            final MyService target = mtarget.get();
+            final SpeechRecognizerService target = mtarget.get();
 
             switch (msg.what) {
                 case MSG_RECOGNIZER_START_LISTENING:

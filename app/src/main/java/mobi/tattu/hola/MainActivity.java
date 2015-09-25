@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Intent service = new Intent(this, MyService.class);
+        Intent service = new Intent(this, SpeechRecognizerService.class);
         startService(service);
         mBindFlag = Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH ? 0 : Context.BIND_ABOVE_CLIENT;
 
@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        bindService(new Intent(this, MyService.class), mServiceConnection, mBindFlag);
+        bindService(new Intent(this, SpeechRecognizerService.class), mServiceConnection, mBindFlag);
     }
 
     @Override
@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
 
             mServiceMessenger = new Messenger(service);
             Message msg = new Message();
-            msg.what = MyService.MSG_RECOGNIZER_START_LISTENING;
+            msg.what = SpeechRecognizerService.MSG_RECOGNIZER_START_LISTENING;
 
             try {
                 mServiceMessenger.send(msg);
