@@ -5,10 +5,13 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import mobi.tattu.hola.R;
 import mobi.tattu.hola.model.News;
+import mobi.tattu.hola.utils.Utils;
 
 /**
  * Created by cristian on 25/09/15.
@@ -40,6 +43,10 @@ public class NewsDetailFragment extends BaseFragment {
         TextView titleTextView = (TextView) view.findViewById(R.id.textview_title);
         TextView subtitleTextView = (TextView) view.findViewById(R.id.textview_subtitle);
         TextView contentTextView = (TextView) view.findViewById(R.id.textview_content);
+        ImageView imageView = (ImageView) view.findViewById(R.id.imageview_news);
+        ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.progressBar2);
+
+        Utils.loadImage(mNews,progressBar,imageView);
 
         titleTextView.setText(mNews.title);
         subtitleTextView.setText(mNews.subTitle);
