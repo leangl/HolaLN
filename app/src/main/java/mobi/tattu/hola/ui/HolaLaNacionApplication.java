@@ -17,6 +17,7 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import mobi.tattu.hola.service.NewsReader;
 import mobi.tattu.hola.service.SpeechRecognizerService;
+import mobi.tattu.utils.Tattu;
 
 /**
  * Created by cristian on 25/09/15.
@@ -28,6 +29,8 @@ public class HolaLaNacionApplication extends Application {
 
     private static Context mContext;
 
+    public static boolean mPush;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -35,12 +38,14 @@ public class HolaLaNacionApplication extends Application {
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this).build();
         ImageLoader.getInstance().init(config);
 
+        Tattu.init(this, MainActivity2.class);
+
         Intent service = new Intent(this, SpeechRecognizerService.class);
         startService(service);
         mBindFlag = Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH ? 0 : Context.BIND_ABOVE_CLIENT;
 
         bindService(new Intent(this, SpeechRecognizerService.class), mServiceConnection, mBindFlag);
-		NewsReader.getInstance().start(this);
+        NewsReader.getInstance().start(this);
     }
 
     public static Context getContext() {

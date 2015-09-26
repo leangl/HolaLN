@@ -15,7 +15,6 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
-
         <activity
             android:name=".ui.SplashActivity"
             android:noHistory="true">
@@ -29,19 +28,24 @@
         <service android:name=".service.SpeechRecognizerService"/>
 
         <activity android:name=".ui.MainActivity2"/>
-
         <activity
             android:name=".ui.CategoryActivity"
             android:noHistory="true"/>
-
         <activity android:name=".ui.NewsDetailActivity"/>
-
         <activity
             android:name=".ui.HolaActivity"
             android:excludeFromRecents="true"
             android:launchMode="singleInstance"
             android:theme="@style/Theme.AppCompat.Translucent"/>
 
+        <receiver
+            android:name=".receiver.PushReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="mobi.tattu.hola.push"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

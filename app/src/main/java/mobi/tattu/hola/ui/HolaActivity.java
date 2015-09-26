@@ -20,7 +20,9 @@ import mobi.tattu.utils.Tattu;
  * Created by Leandro on 26/9/2015.
  */
 public class HolaActivity extends AppCompatActivity {
+
     private EqualizerView mEqualizerView;
+    private RippleBackground rippleBackground;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,8 +33,8 @@ public class HolaActivity extends AppCompatActivity {
 
         mPowerManager = (PowerManager) getSystemService(POWER_SERVICE);
 
-        final RippleBackground rippleBackground = (RippleBackground) findViewById(R.id.content);
-        rippleBackground.startRippleAnimation();
+        rippleBackground = (RippleBackground) findViewById(R.id.content);
+        //rippleBackground.startRippleAnimation();
 
         turnOnScreen();
 
@@ -55,7 +57,6 @@ public class HolaActivity extends AppCompatActivity {
         mEqualizerView.setVisibility(View.GONE);
     }
 
-
     private PowerManager mPowerManager;
     private PowerManager.WakeLock mWakeLock;
 
@@ -76,7 +77,6 @@ public class HolaActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         Tattu.bus().unregister(this);
-
         Tattu.post(new SpeechRecognizerService.StopRecognition());
     }
 
@@ -91,9 +91,27 @@ public class HolaActivity extends AppCompatActivity {
     }
 
     @Subscribe
+    public void on(NewsReader.SpeakStarted event) {
+        startEqualizerView();
+    }
+
+    @Subscribe
     public void on(NewsReader.NewsEnded event) {
         stopEqualizerView();
     }
 
+    @Subscribe
+    public void on(NewsReader.SpeakEnded event) {
+        stopEqualizerView();
+    }
 
+    @Subscribe
+    public void on(SpeechRecognizerService.RecognitionStarted event) {
+        rippleBackground.startRippleAnimation();
+    }
+
+    @Subscribe
+    public void on(SpeechRecognizerService.RecognitionStopped event) {
+        rippleBackground.stopRippleAnimation();
+    }
 }

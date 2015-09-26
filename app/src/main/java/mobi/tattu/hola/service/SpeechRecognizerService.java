@@ -31,6 +31,7 @@ import java.util.List;
 import mobi.tattu.hola.R;
 import mobi.tattu.hola.model.News;
 import mobi.tattu.hola.ui.HolaActivity;
+import mobi.tattu.hola.ui.HolaLaNacionApplication;
 import mobi.tattu.utils.Tattu;
 
 public class SpeechRecognizerService extends Service {
@@ -41,6 +42,8 @@ public class SpeechRecognizerService extends Service {
     private static final String ADELANTE = "adelante";
     private static final String LEER = "leer";
     private static final String PARAR = "parar";
+    private static final String ULTIMA = "última";
+    private static final String NOTICIA = "noticia";
 
     private static final String TAG = SpeechRecognizerService.class.getSimpleName();
 
@@ -112,7 +115,6 @@ public class SpeechRecognizerService extends Service {
             switch (msg.what) {
                 case MSG_RECOGNIZER_START_LISTENING:
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                        // turn off beep sound
                         if (!target.mIsStreamSolo) {
                             target.mAudioManager.setStreamSolo(AudioManager.STREAM_VOICE_CALL, true);
                             target.mIsStreamSolo = true;
@@ -137,7 +139,6 @@ public class SpeechRecognizerService extends Service {
         }
     }
 
-    // Count down timer for Jelly Bean work around
     protected CountDownTimer mNoSpeechCountDown = new CountDownTimer(5000, 5000) {
 
         @Override
@@ -171,6 +172,7 @@ public class SpeechRecognizerService extends Service {
                 throw new RuntimeException(e);
             }
         }
+        Tattu.post(new RecognitionStopped());
     }
 
     private void startListening() {
@@ -229,7 +231,7 @@ public class SpeechRecognizerService extends Service {
         public void onError(int error) {
             Log.d(TAG, "error = " + error);
             if (mState != IDLE) {
-                if (error == 6) {
+                if (error == 6 || error == 7) {
                     readNextFeed("Siguiente Noticia");
                 } else {
                     NewsReader.getInstance().speak("Por favor Repetir Comando", null);
@@ -240,7 +242,6 @@ public class SpeechRecognizerService extends Service {
                             restartListening();
                         }
                     }, 1000);
-
                 }
             } else {
                 restartListening();
@@ -263,6 +264,7 @@ public class SpeechRecognizerService extends Service {
                 mIsCountDownOn = true;
                 mNoSpeechCountDown.start();
             }
+            Tattu.post(new RecognitionStarted());
             Log.d(TAG, "onReadyForSpeech");
         }
 
@@ -313,7 +315,12 @@ public class SpeechRecognizerService extends Service {
                             Log.d(TAG, "read ignored");
                         }
                     } else if (contains(phrase, PARAR)) {
-                        goToIdle();
+                        goToIdle("Hasta Luego!");
+                    } else if (contains(phrase, ULTIMA) || contains(phrase, NOTICIA)) {
+                        if (HolaLaNacionApplication.mPush) {
+                            beep();
+                            
+                        }
                     }
                 } else {
                     Log.d(TAG, "No results");
@@ -329,7 +336,7 @@ public class SpeechRecognizerService extends Service {
         }
 
     }
-    private void goToIdle() {
+    private void goToIdle(String message) {
         if (mState != IDLE) {
             mState = IDLE;
 
@@ -337,7 +344,7 @@ public class SpeechRecognizerService extends Service {
             mCurrentNews = null;
 
             beep();
-            nr.speak("Hasta Luego!", null);
+            nr.speak(message, null);
 
             Tattu.post(new Stop());
         } else {
@@ -371,10 +378,7 @@ public class SpeechRecognizerService extends Service {
                 nr.read(mCurrentNews, true);
             }
         } else {
-            mNextIdx = 0;
-            mCurrentNews = null;
-            mState = IDLE;
-            nr.speak("Fin de las noticias.", null);
+            goToIdle("Fin de las noticias. Hasta Luego!");
         }
     }
 
@@ -394,7 +398,7 @@ public class SpeechRecognizerService extends Service {
             public void run() {
                 startListening();
             }
-        }, 500);
+        }, 250);
     }
 
     @Subscribe
@@ -427,13 +431,19 @@ public class SpeechRecognizerService extends Service {
 
     @Subscribe
     public void on(StopRecognition event) {
-        goToIdle();
+        goToIdle("Hasta Luego!");
     }
 
     public static class Stop {
     }
 
     public static class StopRecognition {
+    }
+
+    public static class RecognitionStarted {
+    }
+
+    public static class RecognitionStopped {
     }
 
 }

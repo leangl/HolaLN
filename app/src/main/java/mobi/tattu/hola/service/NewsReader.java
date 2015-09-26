@@ -21,7 +21,7 @@ public class NewsReader {
     private ArrayList<News> mNewsArrayList;
     private TextToSpeech mTextToSpeech;
     private Context mContext;
-    private Locale mLocale = new Locale("es_ar", "ES_AR");
+    private Locale mLocale = new Locale("es", "AR");
 
 
     public static NewsReader getInstance() {

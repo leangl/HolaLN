@@ -25,7 +25,7 @@
         android:layout_height="match_parent"
         android:background="@android:color/transparent"
         app:rb_color="#0099CC"
-        app:rb_duration="3000"
+        app:rb_duration="1500"
         app:rb_radius="32dp"
         app:rb_rippleAmount="6"
         app:rb_scale="6">
