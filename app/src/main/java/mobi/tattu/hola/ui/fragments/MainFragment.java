@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,15 +26,13 @@ import mobi.tattu.hola.model.Category;
 import mobi.tattu.hola.model.News;
 import mobi.tattu.hola.service.NewsReader;
 import mobi.tattu.hola.ui.NewsDetailActivity;
+import mobi.tattu.utils.Tattu;
 
 /**
  * Created by cristian on 25/09/15.
  */
 public class MainFragment extends BaseFragment {
     private ArrayList<News> mNewsArrayList;
-
-
-
 
 
     public static MainFragment newInstance() {
@@ -54,6 +53,7 @@ public class MainFragment extends BaseFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        Tattu.bus().unregister(this);
 
     }
 
@@ -73,6 +73,7 @@ public class MainFragment extends BaseFragment {
         super.onCreate(savedInstanceState);
         mNewsArrayList = new ArrayList<>();
         searchNewsCategory(NewsReader.getInstance().getListNews());
+        Tattu.register(this);
 
 
     }
@@ -94,11 +95,10 @@ public class MainFragment extends BaseFragment {
     }
 
 
-
     private void createCardNews(LinearLayout container) {
         int size = mNewsArrayList.size();
         for (int i = 0; i < size; i++) {
-            final News news  = mNewsArrayList.get(i);
+            final News news = mNewsArrayList.get(i);
             View view = LayoutInflater.from(getBaseActivity()).inflate(R.layout.cardview_news, null, false);
             final ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.cardview_progressbar);
             final ImageView imageNews = (ImageView) view.findViewById(R.id.cardview_image_news);
@@ -109,10 +109,10 @@ public class MainFragment extends BaseFragment {
                 @Override
                 public void onClick(View view) {
                     boolean stop = NewsReader.getInstance().stopSpeech();
-                    if(stop){
+                    if (stop) {
                         stopEqualizerView();
-                    }else{
-                        startEqualizerView();
+                    } else {
+
                         NewsReader.getInstance().readNewsSpeech(news);
                     }
                 }
@@ -142,7 +142,6 @@ public class MainFragment extends BaseFragment {
     }
 
 
-
     private void loadImage(News news, final ProgressBar progressBar, final ImageView imageNews) {
         // Load image, decode it to Bitmap and return Bitmap to callback
         ImageLoader.getInstance().displayImage(news.imageUri, imageNews, new ImageLoadingListener() {
@@ -167,5 +166,15 @@ public class MainFragment extends BaseFragment {
 
             }
         });
+    }
+
+    @Subscribe
+    public void on(NewsReader.SpeechStart event) {
+        startEqualizerView();
+    }
+
+    @Subscribe
+    public void on(NewsReader.SpeechEnded event) {
+        stopEqualizerView();
     }
 }

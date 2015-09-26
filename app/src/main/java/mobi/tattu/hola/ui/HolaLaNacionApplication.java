@@ -39,7 +39,7 @@ public class HolaLaNacionApplication extends Application {
         startService(service);
         mBindFlag = Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH ? 0 : Context.BIND_ABOVE_CLIENT;
 
-        bindService(new Intent(this, SpeechRecognizerService.class), mServiceConnection, mBindFlag);
+//        bindService(new Intent(this, SpeechRecognizerService.class), mServiceConnection, mBindFlag);
 		NewsReader.getInstance().start(this);
     }
 

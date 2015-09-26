@@ -18,5 +18,6 @@
     <string name="share_news_label">Compartiendo Noticia</string>
     <string name="category_label">Cambiar Categorias</string>
     <string name="message_error_category">Tiene que seleccionar al menos una categoria</string>
+    <string name="message_news_end">Fin de las noticias</string>
 
 </resources>
