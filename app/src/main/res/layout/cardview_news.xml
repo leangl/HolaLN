@@ -16,13 +16,15 @@
             android:layout_height="match_parent">
 
             <ImageView
-                android:layout_width="60dp"
-                android:layout_height="60dp"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
                 android:id="@+id/cardview_image_news"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
-                android:layout_margin="10dp"
+                android:layout_margin="2dp"
+                android:scaleType="centerCrop"
+                android:adjustViewBounds="true"
                 android:src="@drawable/icon_launcher" />
 
             <TextView
@@ -36,7 +38,8 @@
                 android:layout_toEndOf="@+id/cardview_image_news"
                 android:textColor="@color/background_blue"
                 android:textStyle="bold"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                android:layout_marginLeft="3dp" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -48,7 +51,9 @@
                 android:layout_toRightOf="@+id/cardview_image_news"
                 android:layout_toEndOf="@+id/cardview_image_news"
                 android:ellipsize="end"
-                android:singleLine="true"/>
+                android:singleLine="true"
+                android:layout_marginRight="3dp"
+                android:layout_marginLeft="3dp" />
             <View
                 android:layout_below="@id/textview_subtitle"
                 android:layout_width="match_parent"
@@ -66,7 +71,7 @@
                 android:layout_below="@+id/textview_subtitle"
                 android:layout_alignRight="@+id/textview_subtitle"
                 android:layout_alignEnd="@+id/textview_subtitle"
-                android:visibility="visible" />
+                android:visibility="gone" />
 
             <ProgressBar
                 android:layout_width="60dp"
@@ -75,7 +80,8 @@
                 android:layout_alignTop="@+id/cardview_image_news"
                 android:layout_alignLeft="@+id/cardview_image_news"
                 android:layout_alignStart="@+id/cardview_image_news"
-                android:visibility="visible" />
+                android:visibility="gone"
+                android:indeterminate="false" />
 
 
 
