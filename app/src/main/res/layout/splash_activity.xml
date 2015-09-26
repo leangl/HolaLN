@@ -10,7 +10,9 @@
         android:src="@drawable/logo_nacion"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="125dp" />
+        android:layout_marginTop="125dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp" />
 
     <ProgressBar
         android:layout_width="wrap_content"
