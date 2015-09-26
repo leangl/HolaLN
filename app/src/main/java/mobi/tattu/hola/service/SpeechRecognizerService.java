@@ -72,7 +72,7 @@ public class SpeechRecognizerService extends Service {
         Notification n = new NotificationCompat.Builder(this)
                 .setContentTitle("Hola La Nación")
                 .setContentText("Activado")
-                .setSmallIcon(R.drawable.icon_launcher)
+                .setSmallIcon(R.mipmap.ic_launcher)
                 .build();
 
         startForeground(123, n);
@@ -264,19 +264,7 @@ public class SpeechRecognizerService extends Service {
 
     private void beep() {
         Log.d(TAG, "beep!");
-        mAudioManager.setStreamSolo(AudioManager.STREAM_VOICE_CALL, false);
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mSoundPool.play(mBeepSound, 1, 1, Integer.MAX_VALUE, 0, 1);
-                mHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        mAudioManager.setStreamSolo(AudioManager.STREAM_VOICE_CALL, true);
-                    }
-                }, 500);
-            }
-        }, 200);
+        mSoundPool.play(mBeepSound, 1, 1, Integer.MAX_VALUE, 0, 1);
     }
 
     private void restartListening() {
