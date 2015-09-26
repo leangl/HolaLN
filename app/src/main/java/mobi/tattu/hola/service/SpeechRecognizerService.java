@@ -22,11 +22,14 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
+import com.squareup.otto.Subscribe;
+
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
 import mobi.tattu.hola.R;
+import mobi.tattu.utils.Tattu;
 
 public class SpeechRecognizerService extends Service {
 
@@ -76,6 +79,8 @@ public class SpeechRecognizerService extends Service {
                 .build();
 
         startForeground(123, n);
+
+        Tattu.register(this);
     }
 
     protected static class IncomingHandler extends Handler {
@@ -198,7 +203,9 @@ public class SpeechRecognizerService extends Service {
 
         @Override
         public void onError(int error) {
-            restartListening();
+            if (waitingCommand) {
+                restartListening();
+            }
             Log.d(TAG, "error = " + error);
         }
 
@@ -230,18 +237,32 @@ public class SpeechRecognizerService extends Service {
                     String phrase = result.get(0).toLowerCase();
                     Log.d(TAG, result.get(0));
 
+                    NewsReader nr = NewsReader.getInstance();
+
                     if (contains(phrase, HOLA) || contains(phrase, NACION)) {
-                        beep();
-                        //
+                        if (nr.readResumeNewsSpeech()) {
+                            beep();
+                        } else {
+                            Log.d(TAG, "no resume news speech");
+                        }
                     } else if (contains(phrase, ATRAS)) {
-                        beep();
-                        //
+                        if (nr.backNewsSpeech()) {
+                            beep();
+                        } else {
+                            Log.d(TAG, "no back news speech");
+                        }
                     } else if (contains(phrase, LEER)) {
-                        beep();
-                        //
+                        if (nr.readCurrentNews()) {
+                            beep();
+                        } else {
+                            Log.d(TAG, "no read current news");
+                        }
                     } else if (contains(phrase, PARAR)) {
-                        beep();
-                        //
+                        if (nr.stopSpeech()) {
+                            beep();
+                        } else {
+                            Log.d(TAG, "no stop speech");
+                        }
                     }
                 } else {
                     Log.d(TAG, "No results");
@@ -275,5 +296,18 @@ public class SpeechRecognizerService extends Service {
                 startListening();
             }
         }, 200);
+    }
+
+    @Subscribe
+    public void on(NewsReader.SpeechStart event) {
+        stopListening();
+    }
+
+    boolean waitingCommand;
+
+    @Subscribe
+    public void on(NewsReader.SpeechEnded event) {
+        waitingCommand = true;
+        restartListening();
     }
 }

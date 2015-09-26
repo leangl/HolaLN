@@ -2,6 +2,8 @@ package mobi.tattu.hola.service;
 
 import android.content.Context;
 import android.media.AudioManager;
+import android.os.Handler;
+import android.os.Looper;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
 
@@ -9,7 +11,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 
-import mobi.tattu.hola.R;
 import mobi.tattu.hola.model.Category;
 import mobi.tattu.hola.model.News;
 import mobi.tattu.utils.Tattu;
@@ -35,17 +36,17 @@ public class NewsReader {
     }
 
     public void start(Context context) {
-
         this.mContext = context;
         this.mNewsArrayList = new ArrayList<>();
-        this.mNewsArrayList.add(createNews("River gano 2 a 0 a Liga de Quito", "En su cancha river se hizo fuerte y derroto con contundencia a un tibio equipo peruano",
-                " ", Category.DEPORTES));
-        this.mNewsArrayList.add(createNews("Hoy se estrena la película truman", "Otro estreno argentino con darin a la cabeza, se encamina a ser otro record de taquilla",
-                "bbvbvbcbcvbcvbv bcvb cvb cv bc  werewr ewr we rwe r ew r ew rew rew r ew rew r wervb vc b vcbcvb cvb vc bvc b vc bc vb vcb cv b vcb vc bcv b vc bvc bcv", Category.ESPECTACULOS));
-        this.mNewsArrayList.add(createNews("Scioli se niega a debatir", "Scioli se niega a debatir en el primer debate presidencial de la historia argentina",
-                "bbvbvbcbcvbcvbv bcvb cvb cv bc v wer ew r ewr wer we r wer ew r ewrb vc b vcbcvb cvb vc bvc b vc bc vb vcb cv b vcb vc bcv b vc bvc bcv", Category.POLITICA));
-        this.mNewsArrayList.add(createNews("El Papa Francisco en el congreso de Estados Unidos", "Es la primera vez en la histora que un papa habla en el congreso de los estados unidos",
-                "bbvbvbcbcvbcvbv bcvb cvb cv bc vbwer we r ewr wer we rwe vc b vcbcvb cvb vc bvc b vc bc vb vcb cv b vcb vc bcv b vc bvc bcv", Category.EL_MUNDO));
+        this.mNewsArrayList.add(createNews("River gano 2 a 0 a Liga de Quito.", "En su cancha, River se hizo fuerte y derrotó con contundencia a un tibio equipo peruano.",
+                "River.", Category.DEPORTES));
+        this.mNewsArrayList.add(createNews("Hoy se estrena la película truman.", "Otro estreno Argentino con Darín a la cabeza, se encamina a ser otro record de taquilla.",
+                "Truman.", Category.ESPECTACULOS));
+        this.mNewsArrayList.add(createNews("Scioli se niega a debatir.", "Scioli se niega a debatir en el primer debate presidencial de la historia argentina.",
+                "Scioli.", Category.POLITICA));
+        this.mNewsArrayList.add(createNews("El Papa Francisco en el congreso de Estados Unidos.", "Es la primera vez en la histora que un Papa habla en el congreso de los Estados Unidos.",
+                "Papa.", Category.EL_MUNDO));
+
         this.mTextToSpeech = new TextToSpeech(this.mContext, new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int i) {
@@ -56,22 +57,26 @@ public class NewsReader {
                     @Override
                     public void onStart(String s) {
                         Tattu.post(new SpeechStart());
-
                     }
 
                     @Override
                     public void onDone(String s) {
                         Tattu.post(new SpeechEnded());
-                        if(mResumeSpeech){
-                            readResumeNewsSpeech();
+                        if (!s.equals("no")) {
+                            if (mResumeSpeech) {
+                                Handler h = new Handler(Looper.getMainLooper());
+                                h.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        readResumeNewsSpeech();
+                                    }
+                                }, 3000);
+                            }
                         }
-
-
                     }
 
                     @Override
                     public void onError(String s) {
-
                     }
                 });
             }
@@ -88,13 +93,13 @@ public class NewsReader {
     public boolean stopSpeech() {
         if (mTextToSpeech.isSpeaking()) {
             mTextToSpeech.stop();
-            if(!mReadingNews){
+            if (!mReadingNews) {
                 mResumeSpeech = false;
                 mIndexNews = 0;
-            }else{
+                speech("Parando", "no");
+            } else {
                 readResumeNewsSpeech();
             }
-
             return true;
         } else {
             return false;
@@ -104,59 +109,59 @@ public class NewsReader {
     public void readNewsSpeech(News news) {
         mResumeSpeech = false;
         mReadingNews = false;
-        speech(news.toString(), news.title);
+        speech(news.content, news.title);
 
     }
-    public boolean readCurrentNews(){
-        if(mResumeSpeech){
+    public boolean readCurrentNews() {
+        if (mResumeSpeech) {
             mReadingNews = true;
             stopSpeech();
-            News news = mNewsArrayList.get(mIndexNews -1);
-            speech(news.getResumeNews(),news.title);
-            return  true;
-        }else{
+            News news = mNewsArrayList.get(mIndexNews - 1);
+            speech("Leyendo " + news.getResumeNews(), news.title);
+            return true;
+        } else {
             return false;
         }
     }
 
     public boolean readResumeNewsSpeech() {
-        if(mTextToSpeech.isSpeaking()){
+        if (mTextToSpeech.isSpeaking()) {
             return false;
         }
-        if(mIndexNews == mNewsArrayList.size()){
+        if (mIndexNews == mNewsArrayList.size()) {
             mIndexNews = 0;
             mResumeSpeech = false;
-            speech(mContext.getString(R.string.message_news_end),"end");
-        }else{
+            speech("Fin de las noticias", "no");
+        } else {
             mResumeSpeech = true;
             String text = "";
-            if(mIndexNews == 0){
-                text = "Hola Señor X, estas son tus noticias.";
+            if (mIndexNews == 0) {
+                text = "Hola Cristian, estas son tus noticias.";
             }
             News news = mNewsArrayList.get(mIndexNews);
             mIndexNews++;
             speech(text + news.getResumeNews(), news.title);
         }
-       return mResumeSpeech;
+        return mResumeSpeech;
     }
 
     public boolean backNewsSpeech() {
         if (mIndexNews > 0 && mResumeSpeech) {
             News news = mNewsArrayList.get(--mIndexNews);
-            speech(news.getResumeNews(), news.title);
+            speech("Atras   " + news.getResumeNews(), news.title);
             return true;
-        }else{
+        } else {
             return false;
         }
     }
 
     private void speech(String text, String unique) {
-
         HashMap<String, String> hashMap = new HashMap<>();
         hashMap.put(TextToSpeech.Engine.KEY_PARAM_STREAM, String.valueOf(AudioManager.STREAM_ALARM));
         hashMap.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, unique);
         mTextToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, hashMap);
     }
+
     private News createNews(String title, String subtitle, String contenido, Category category) {
         News news = new News();
         news.title = title;
