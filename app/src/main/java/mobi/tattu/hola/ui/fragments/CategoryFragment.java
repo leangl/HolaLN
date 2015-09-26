@@ -73,6 +73,7 @@ public class CategoryFragment extends BaseFragment {
             Category category = mCategoriesSelected.get(i);
             DataStore.getInstance().putObject(category.getNameCategory(getBaseActivity()), category);
         }
+        DataStore.getInstance().putObject("WIZARD_COMPLETED", Boolean.TRUE);
     }
     private void addCheckBoxContainer(View view) {
         LinearLayout containerLeft = (LinearLayout) view.findViewById(R.id.container_checkbox_left);
