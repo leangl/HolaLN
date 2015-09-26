@@ -40,9 +40,11 @@ public class SplashActivity extends BaseActivity {
         mTimer.schedule(new TimerTask() {
             @Override
             public void run() {
-
-
-                startActivity(new Intent(SplashActivity.this, CategoryActivity.class));
+                if(DataStore.getInstance().getAll(Category.class).isEmpty()){
+                    startActivity(new Intent(SplashActivity.this,MainActivity2.class));
+                }else{
+                    startActivity(new Intent(SplashActivity.this, CategoryActivity.class));
+                }
             }
         }, TimeUnit.SECONDS.toMillis(2));
     }
