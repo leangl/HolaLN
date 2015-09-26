@@ -36,19 +36,19 @@ public class SplashActivity extends BaseActivity {
         createListCategory();
         this.mProgressBar = (ProgressBar) this.findViewById(R.id.progressBar);
         mTimer = new Timer();
-
         mTimer.schedule(new TimerTask() {
             @Override
             public void run() {
-                if(DataStore.getInstance().getAll(Category.class).isEmpty()){
-                    startActivity(new Intent(SplashActivity.this,MainActivity2.class));
-                }else{
+                try {
+                    DataStore.getInstance().getObject("WIZARD_COMPLETED", Boolean.class);
+                    startActivity(new Intent(SplashActivity.this, MainActivity2.class));
+                } catch (Exception e) {
                     startActivity(new Intent(SplashActivity.this, CategoryActivity.class));
                 }
             }
         }, TimeUnit.SECONDS.toMillis(2));
     }
-    private void hideProgressbar(){
+    private void hideProgressbar() {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -58,7 +58,6 @@ public class SplashActivity extends BaseActivity {
         });
     }
     private void createListCategory() {
-
         saveCategory(Category.POLITICA, false, Category.Side.LEFT);
         saveCategory(Category.ECONOMIA, false, Category.Side.LEFT);
         saveCategory(Category.EL_MUNDO, false, Category.Side.LEFT);
@@ -72,7 +71,6 @@ public class SplashActivity extends BaseActivity {
     }
 
     /**
-     *
      * @param checked
      * @param side    indica de que lado se tiene que mostrar el checkbox (los valores son )
      * @return

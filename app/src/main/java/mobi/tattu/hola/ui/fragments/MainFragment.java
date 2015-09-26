@@ -72,7 +72,7 @@ public class MainFragment extends BaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mNewsArrayList = new ArrayList<>();
-        searchNewsCategory(NewsReader.getInstance().getListNews());
+        searchNewsCategory(NewsReader.getInstance().getNews());
         Tattu.register(this);
 
 
@@ -113,7 +113,7 @@ public class MainFragment extends BaseFragment {
                         stopEqualizerView();
                     } else {
 
-                        NewsReader.getInstance().readNewsSpeech(news);
+                        NewsReader.getInstance().read(news);
                     }
                 }
             });
@@ -169,12 +169,12 @@ public class MainFragment extends BaseFragment {
     }
 
     @Subscribe
-    public void on(NewsReader.SpeechStart event) {
+    public void on(NewsReader.NewsStarted event) {
         startEqualizerView();
     }
 
     @Subscribe
-    public void on(NewsReader.SpeechEnded event) {
+    public void on(NewsReader.NewsEnded event) {
         stopEqualizerView();
     }
 }

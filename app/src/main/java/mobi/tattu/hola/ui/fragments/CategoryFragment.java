@@ -51,13 +51,13 @@ public class CategoryFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_category, container, false);
         addCheckBoxContainer(view);
-        Button nextButton  = (Button)view.findViewById(R.id.category_next_button);
+        Button nextButton = (Button) view.findViewById(R.id.category_next_button);
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(mCategoriesSelected.isEmpty()){
-                    Toast.makeText(getBaseActivity(),R.string.message_error_category,Toast.LENGTH_SHORT).show();
-                }else{
+                if (mCategoriesSelected.isEmpty()) {
+                    Toast.makeText(getBaseActivity(), R.string.message_error_category, Toast.LENGTH_SHORT).show();
+                } else {
                     DataStore.getInstance().deleteAll(Category.class);
                     saveCategoriesSelected();
                     startActivity(new Intent(getBaseActivity(), MainActivity2.class));
@@ -67,12 +67,13 @@ public class CategoryFragment extends BaseFragment {
         return view;
 
     }
-    private void saveCategoriesSelected(){
-        int size  = mCategoriesSelected.size();
-        for(int i = 0 ; i < size ; i++){
+    private void saveCategoriesSelected() {
+        int size = mCategoriesSelected.size();
+        for (int i = 0; i < size; i++) {
             Category category = mCategoriesSelected.get(i);
-            DataStore.getInstance().putObject(category.getNameCategory(getBaseActivity()),category);
+            DataStore.getInstance().putObject(category.getNameCategory(getBaseActivity()), category);
         }
+        DataStore.getInstance().putObject("WIZARD_COMPLETED", Boolean.TRUE);
     }
     private void addCheckBoxContainer(View view) {
         LinearLayout containerLeft = (LinearLayout) view.findViewById(R.id.container_checkbox_left);

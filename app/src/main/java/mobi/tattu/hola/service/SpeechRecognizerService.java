@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mobi.tattu.hola.R;
+import mobi.tattu.hola.model.News;
 import mobi.tattu.utils.Tattu;
 
 public class SpeechRecognizerService extends Service {
@@ -36,6 +37,7 @@ public class SpeechRecognizerService extends Service {
     private static final String HOLA = "hola";
     private static final String NACION = "nación";
     private static final String ATRAS = "atrás";
+    private static final String ADELANTE = "adelante";
     private static final String LEER = "leer";
     private static final String PARAR = "parar";
 
@@ -58,6 +60,16 @@ public class SpeechRecognizerService extends Service {
     private SoundPool mSoundPool;
     private int mBeepSound;
 
+    private static final int IDLE = 0;
+    private static final int FEED = 1;
+    private static final int NEWS = 2;
+
+    private int mState = IDLE;
+
+    private int mNextIdx = 0;
+
+    private NewsReader nr;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -71,6 +83,8 @@ public class SpeechRecognizerService extends Service {
         mSpeechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, getPackageName());
         mSoundPool = new SoundPool(3, AudioManager.STREAM_ALARM, 0);
         mBeepSound = mSoundPool.load(this, R.raw.beep, 1);
+
+        nr = NewsReader.getInstance();
 
         Notification n = new NotificationCompat.Builder(this)
                 .setContentTitle("Hola La Nación")
@@ -133,7 +147,12 @@ public class SpeechRecognizerService extends Service {
         public void onFinish() {
             Log.d(TAG, "CountDownTimer.onFinish");
             mIsCountDownOn = false;
-            restartListening();
+
+            if (mState != IDLE) {
+                readNextFeed("Siguiente Noticia");
+            } else {
+                restartListening();
+            }
         }
     };
 
@@ -142,21 +161,25 @@ public class SpeechRecognizerService extends Service {
             mIsCountDownOn = false;
             mNoSpeechCountDown.cancel();
         }
-        mIsListening = false;
-        try {
-            Message message = Message.obtain(null, MSG_RECOGNIZER_CANCEL);
-            mServerMessenger.send(message);
-        } catch (RemoteException e) {
-            throw new RuntimeException(e);
+        if (mIsListening) {
+            mIsListening = false;
+            try {
+                Message message = Message.obtain(null, MSG_RECOGNIZER_CANCEL);
+                mServerMessenger.send(message);
+            } catch (RemoteException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
     private void startListening() {
-        try {
-            Message message = Message.obtain(null, MSG_RECOGNIZER_START_LISTENING);
-            mServerMessenger.send(message);
-        } catch (RemoteException e) {
-            throw new RuntimeException(e);
+        if (!mIsListening) {
+            try {
+                Message message = Message.obtain(null, MSG_RECOGNIZER_START_LISTENING);
+                mServerMessenger.send(message);
+            } catch (RemoteException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
@@ -184,7 +207,7 @@ public class SpeechRecognizerService extends Service {
 
         @Override
         public void onBeginningOfSpeech() {
-            // speech input will be processed, so there is no need for count down anymore
+            // speak input will be processed, so there is no need for count down anymore
             if (mIsCountDownOn) {
                 mIsCountDownOn = false;
                 mNoSpeechCountDown.cancel();
@@ -204,18 +227,23 @@ public class SpeechRecognizerService extends Service {
         @Override
         public void onError(int error) {
             Log.d(TAG, "error = " + error);
-            if (NewsReader.getInstance().mResumeSpeech) {
-                NewsReader.getInstance().speechRepiteCommand();
-                Tattu.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        restartListening();
-                    }
-                }, 3000);
+            if (mState != IDLE) {
+                if (error == 6) {
+                    readNextFeed("Siguiente Noticia");
+                } else {
+                    NewsReader.getInstance().speak("Por favor Repetir Comando", null);
+                    Handler h = new Handler(Looper.getMainLooper());
+                    h.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            restartListening();
+                        }
+                    }, 1000);
+
+                }
             } else {
                 restartListening();
             }
-
         }
 
         @Override
@@ -233,7 +261,6 @@ public class SpeechRecognizerService extends Service {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                 mIsCountDownOn = true;
                 mNoSpeechCountDown.start();
-
             }
             Log.d(TAG, "onReadyForSpeech");
         }
@@ -246,31 +273,51 @@ public class SpeechRecognizerService extends Service {
                     String phrase = result.get(0).toLowerCase();
                     Log.d(TAG, result.get(0));
 
-                    NewsReader nr = NewsReader.getInstance();
-
                     if (contains(phrase, HOLA) || contains(phrase, NACION)) {
-                        if (nr.readResumeNewsSpeech()) {
+                        if (mState == IDLE) {
+                            mState = FEED;
                             beep();
+
+                            mNextIdx = 0;
+                            readNextFeed("Hola! Estas son tus noticias.");
                         } else {
-                            Log.d(TAG, "no resume news speech");
+                            Log.d(TAG, "read feed ignored");
                         }
                     } else if (contains(phrase, ATRAS)) {
-                        if (nr.backNewsSpeech()) {
+                        if (mState == FEED) {
+                            mState = FEED;
                             beep();
+                            readPreviousFeed();
                         } else {
-                            Log.d(TAG, "no back news speech");
+                            Log.d(TAG, "back feed ignored");
+                        }
+                    } else if (contains(phrase, ADELANTE)) {
+                        if (mState != IDLE) {
+                            mState = FEED;
+                            beep();
+                            readNextFeed("Siguiente Noticia");
+                        } else {
+                            Log.d(TAG, "back feed ignored");
                         }
                     } else if (contains(phrase, LEER)) {
-                        if (nr.readCurrentNews()) {
+                        if (mState == FEED) {
+                            mState = NEWS;
                             beep();
+                            nr.read(mCurrentNews);
                         } else {
-                            Log.d(TAG, "no read current news");
+                            Log.d(TAG, "read ignored");
                         }
                     } else if (contains(phrase, PARAR)) {
-                        if (nr.stopSpeech()) {
+                        if (mState != IDLE) {
+                            mState = IDLE;
+
+                            mNextIdx = 0;
+                            mCurrentNews = null;
+
                             beep();
+                            nr.speak("Hasta Luego!", null);
                         } else {
-                            Log.d(TAG, "no stop speech");
+                            Log.d(TAG, "stop ignored");
                         }
                     }
                 } else {
@@ -286,6 +333,39 @@ public class SpeechRecognizerService extends Service {
         public void onRmsChanged(float rmsdB) {
         }
 
+    }
+
+    private News mCurrentNews;
+
+    private void readPreviousFeed() {
+        if (mNextIdx > 0) {
+            mNextIdx--;
+        }
+        if (mNextIdx > 0) {
+            mNextIdx--;
+        }
+        List<News> news = nr.getNews();
+        if (mNextIdx < news.size()) {
+            mCurrentNews = news.get(mNextIdx);
+            nr.read(mCurrentNews, true);
+        }
+    }
+
+    private void readNextFeed(String before) {
+        List<News> news = nr.getNews();
+        if (mNextIdx < news.size()) {
+            mCurrentNews = news.get(mNextIdx++);
+            if (before != null) {
+                nr.speak(before, null);
+            } else {
+                nr.read(mCurrentNews, true);
+            }
+        } else {
+            mNextIdx = 0;
+            mCurrentNews = null;
+            mState = IDLE;
+            nr.speak("Fin de las noticias.", null);
+        }
     }
 
     private boolean contains(String phrase, String key) {
@@ -304,20 +384,35 @@ public class SpeechRecognizerService extends Service {
             public void run() {
                 startListening();
             }
-        }, 200);
+        }, 500);
     }
 
     @Subscribe
-    public void on(NewsReader.SpeechStart event) {
-        waitingCommand = false;
+    public void on(NewsReader.NewsStarted event) {
+        Log.d(TAG, "news started");
         stopListening();
     }
 
-    boolean waitingCommand;
-
     @Subscribe
-    public void on(NewsReader.SpeechEnded event) {
-        waitingCommand = true;
+    public void on(NewsReader.NewsEnded event) {
+        Log.d(TAG, "news ended");
         restartListening();
     }
+
+    @Subscribe
+    public void on(NewsReader.SpeakStarted event) {
+        Log.d(TAG, "speak started");
+        stopListening();
+    }
+
+    @Subscribe
+    public void on(NewsReader.SpeakEnded event) {
+        Log.d(TAG, "speak ended");
+        if (mCurrentNews != null) {
+            nr.read(mCurrentNews, true);
+        } else {
+            restartListening();
+        }
+    }
+
 }
