@@ -57,30 +57,28 @@ public class SplashActivity extends BaseActivity {
     }
     private void createListCategory() {
 
-        createCategory(getString(R.string.category_politica), false, Category.Side.LEFT);
-        createCategory(getString(R.string.category_economia), false, Category.Side.LEFT);
-        createCategory(getString(R.string.category_el_mundo), false, Category.Side.LEFT);
-        createCategory(getString(R.string.category_opinion), false, Category.Side.LEFT);
-        createCategory(getString(R.string.category_sociedad), false, Category.Side.LEFT);
-        createCategory(getString(R.string.category_buenos_aires), false, Category.Side.RIGHT);
-        createCategory(getString(R.string.category_espectaculos), false, Category.Side.RIGHT);
-        createCategory(getString(R.string.category_tecnologia), false, Category.Side.RIGHT);
-        createCategory(getString(R.string.category_deportes), false, Category.Side.RIGHT);
-        createCategory(getString(R.string.category_seguridad), false, Category.Side.RIGHT);
+        saveCategory(Category.POLITICA, false, Category.Side.LEFT);
+        saveCategory(Category.ECONOMIA, false, Category.Side.LEFT);
+        saveCategory(Category.EL_MUNDO, false, Category.Side.LEFT);
+        saveCategory(Category.OPINION, false, Category.Side.LEFT);
+        saveCategory(Category.SOCIEDAD, false, Category.Side.LEFT);
+        saveCategory(Category.BUENOS_AIRES, false, Category.Side.RIGHT);
+        saveCategory(Category.ESPECTACULOS, false, Category.Side.RIGHT);
+        saveCategory(Category.TECNOLOGIA, false, Category.Side.RIGHT);
+        saveCategory(Category.DEPORTES, false, Category.Side.RIGHT);
+        saveCategory(Category.SEGURIDAD, false, Category.Side.RIGHT);
     }
 
     /**
-     * @param name
+     *
      * @param checked
      * @param side    indica de que lado se tiene que mostrar el checkbox (los valores son )
      * @return
      */
-    private Category createCategory(String name, boolean checked, Category.Side side) {
-        Category category = new Category();
-        category.name = name;
+    private Category saveCategory(Category category, boolean checked, Category.Side side) {
         category.checked = checked;
         category.layoutSide = side;
-        DataStore.getInstance().putObject(category.name, category);
+        DataStore.getInstance().putObject(category.getNameCategory(this), category);
         return category;
     }
 

@@ -4,4 +4,5 @@
     <color name="background_blue">#0084b5</color>
     <color name="background_gray">@android:color/darker_gray</color>
     <color name="text_color_blue">#0084b5</color>
+    <color name="cardview_separator">@color/cardview_shadow_start_color</color>
 </resources>

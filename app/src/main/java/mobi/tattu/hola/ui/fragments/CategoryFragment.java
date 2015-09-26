@@ -41,7 +41,6 @@ public class CategoryFragment extends BaseFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mCategories = new ArrayList<>(DataStore.getInstance().getAll(Category.class));
-        DataStore.getInstance().deleteAll(Category.class);
         mCategoriesSelected = new ArrayList<>();
 
     }
@@ -55,7 +54,8 @@ public class CategoryFragment extends BaseFragment {
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                DataStore.getInstance().deleteAll(Category.class);
+                saveCategoriesSelected();
                 startActivity(new Intent(getBaseActivity(), MainActivity2.class));
             }
         });
@@ -66,7 +66,7 @@ public class CategoryFragment extends BaseFragment {
         int size  = mCategoriesSelected.size();
         for(int i = 0 ; i < size ; i++){
             Category category = mCategoriesSelected.get(i);
-            DataStore.getInstance().putObject(category.name,category);
+            DataStore.getInstance().putObject(category.getNameCategory(getBaseActivity()),category);
         }
     }
     private void addCheckBoxContainer(View view) {
@@ -86,7 +86,7 @@ public class CategoryFragment extends BaseFragment {
 
     private CheckBox createCheckBox(Category category) {
         CheckBox checkBox = new CheckBox(getBaseActivity());
-        checkBox.setText(category.name);
+        checkBox.setText(category.getNameCategory(getBaseActivity()));
         checkBox.setChecked(category.checked);
         checkBox.setPadding(10, 10, 10, 10);
         checkBox.setTag(category);

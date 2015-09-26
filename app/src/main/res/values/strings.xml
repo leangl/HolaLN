@@ -14,5 +14,7 @@
     <string name="category_deportes">Deportes</string>
     <string name="category_seguridad">Segurirdad</string>
     <string name="next_label">Siguiente</string>
+    <string name="share_label">Compartir</string>
+    <string name="share_news_label">Compartiendo Noticia</string>
 
 </resources>
