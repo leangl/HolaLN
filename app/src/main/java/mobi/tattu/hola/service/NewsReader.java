@@ -2,8 +2,6 @@ package mobi.tattu.hola.service;
 
 import android.content.Context;
 import android.media.AudioManager;
-import android.os.Handler;
-import android.os.Looper;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
 
@@ -25,7 +23,7 @@ public class NewsReader {
     private Context mContext;
     private Locale mLocale = new Locale("es_ar", "ES_AR");
     private int mIndexNews = 0;
-    private boolean mResumeSpeech;
+    public boolean mResumeSpeech;
     private boolean mReadingNews;
 
     public static NewsReader getInstance() {
@@ -56,22 +54,14 @@ public class NewsReader {
                 mTextToSpeech.setOnUtteranceProgressListener(new UtteranceProgressListener() {
                     @Override
                     public void onStart(String s) {
-                        Tattu.post(new SpeechStart());
+                        if(!s.equals("no")){
+                            Tattu.post(new SpeechStart());
+                        }
                     }
-
                     @Override
                     public void onDone(String s) {
-                        Tattu.post(new SpeechEnded());
                         if (!s.equals("no")) {
-                            if (mResumeSpeech) {
-                                Handler h = new Handler(Looper.getMainLooper());
-                                h.postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        readResumeNewsSpeech();
-                                    }
-                                }, 3000);
-                            }
+                            Tattu.post(new SpeechEnded());
                         }
                     }
 
@@ -176,6 +166,10 @@ public class NewsReader {
     }
 
     public class SpeechEnded {
+    }
+
+    public void speechRepiteCommand(){
+        speech("Por favor Repetir Comando","no");
     }
 
 }

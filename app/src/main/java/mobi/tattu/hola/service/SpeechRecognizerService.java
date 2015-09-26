@@ -203,10 +203,19 @@ public class SpeechRecognizerService extends Service {
 
         @Override
         public void onError(int error) {
-            if (waitingCommand) {
+            Log.d(TAG, "error = " + error);
+            if (NewsReader.getInstance().mResumeSpeech) {
+                NewsReader.getInstance().speechRepiteCommand();
+                Tattu.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        restartListening();
+                    }
+                }, 3000);
+            } else {
                 restartListening();
             }
-            Log.d(TAG, "error = " + error);
+
         }
 
         @Override
@@ -300,6 +309,7 @@ public class SpeechRecognizerService extends Service {
 
     @Subscribe
     public void on(NewsReader.SpeechStart event) {
+        waitingCommand = false;
         stopListening();
     }
 
