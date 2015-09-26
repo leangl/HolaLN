@@ -2,6 +2,7 @@ package mobi.tattu.hola.ui.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,11 +47,11 @@ public class NewsDetailFragment extends BaseFragment {
         ImageView imageView = (ImageView) view.findViewById(R.id.imageview_news);
         ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.progressBar2);
 
-        Utils.loadImage(mNews,progressBar,imageView);
+        Utils.loadImage(mNews, progressBar, imageView);
 
         titleTextView.setText(mNews.title);
         subtitleTextView.setText(mNews.subTitle);
-        contentTextView.setText(mNews.content);
+        contentTextView.setText(Html.fromHtml(mNews.content));
         return view;
     }
 }
