@@ -16,9 +16,9 @@ import mobi.tattu.hola.model.News;
 public class NewsReader {
     private static NewsReader ourInstance = new NewsReader();
     private ArrayList<News> mNewsArrayList;
-    private TextToSpeech  mTextToSpeech;
+    private TextToSpeech mTextToSpeech;
     private Context mContext;
-    private Locale mLocale = new Locale("es_ar","ES_AR");
+    private Locale mLocale = new Locale("es_ar", "ES_AR");
     private int mIndexNews = 0;
 
     public static NewsReader getInstance() {
@@ -53,40 +53,44 @@ public class NewsReader {
     }
 
     /**
-     *
      * @return true si paro el servicio , sino devuevel false
      */
-    public boolean stopSpeech(){
-        if(mTextToSpeech.isSpeaking()){
+    public boolean stopSpeech() {
+        if (mTextToSpeech.isSpeaking()) {
             mTextToSpeech.stop();
-            mTextToSpeech.shutdown();
+
             return true;
-        }else{
-            return true;
-        }
-    }
-    
-    public void readNewsSpeech(News news){
-       speech(news.toString(),news.title);
-    }
-    public void readResumeNewsSpeech(){
-        News news = mNewsArrayList.get(mIndexNews);
-        mIndexNews++;
-        speech(news.getResumeNews(),news.title);
-    }
-    public void backNewsSpeech(){
-        if(mIndexNews > 0){
-            News news = mNewsArrayList.get(--mIndexNews);
-            speech(news.getResumeNews(),news.title);
+        } else {
+            return false;
         }
     }
 
-    private void speech(String text,String unique){
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            mTextToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH,null);
-        }else{
-            mTextToSpeech.speak(text,TextToSpeech.QUEUE_FLUSH,null,unique);
+    public void readNewsSpeech(News news) {
+        speech(news.toString(), news.title);
+
+    }
+
+    public void readResumeNewsSpeech() {
+        News news = mNewsArrayList.get(mIndexNews);
+        mIndexNews++;
+        speech(news.getResumeNews(), news.title);
+    }
+
+    public void backNewsSpeech() {
+        if (mIndexNews > 0) {
+            News news = mNewsArrayList.get(--mIndexNews);
+            speech(news.getResumeNews(), news.title);
         }
+    }
+
+    private void speech(String text, String unique) {
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            mTextToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+        } else {
+            mTextToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null, unique);
+        }
+
     }
 
     private News createNews(String title, String subtitle, String contenido, Category category) {
@@ -99,5 +103,7 @@ public class NewsReader {
         return news;
     }
 
-
+    public interface NewsReaderListener {
+        void onSuccessSpeech();
+    }
 }

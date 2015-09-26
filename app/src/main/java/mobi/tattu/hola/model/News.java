@@ -39,4 +39,8 @@ public class News implements Serializable,Comparable<Category> {
     public String toString() {
         return  title +" " +subTitle +" "+ content;
     }
+
+    public String getResumeNews(){
+        return  title + " " + subTitle;
+    }
 }

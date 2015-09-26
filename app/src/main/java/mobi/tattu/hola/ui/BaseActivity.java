@@ -27,6 +27,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         if (mToolbar != null) {
             mEqualizerView = (EqualizerView) findViewById(R.id.equalizer_view);
             mEqualizerView.setVisibility(View.VISIBLE);
+            stopEqualizerView();
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 mToolbar.setTitleTextColor(getResources().getColor(android.R.color.white, getTheme()));
             } else {
