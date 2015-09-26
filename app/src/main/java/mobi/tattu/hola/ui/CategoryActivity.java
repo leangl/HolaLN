@@ -15,7 +15,6 @@ public class CategoryActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         hideToolbar();
-        hideEqualizarView();
         showFragment(CategoryFragment.newInstance(), false);
     }
 
@@ -27,7 +26,7 @@ public class CategoryActivity extends BaseActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.action_category:
                 break;
 

@@ -15,7 +15,6 @@ import android.widget.TextView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
-import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -104,19 +103,6 @@ public class MainFragment extends BaseFragment {
             final ImageView imageNews = (ImageView) view.findViewById(R.id.cardview_image_news);
             TextView titleTextView = (TextView) view.findViewById(R.id.textview_title);
             TextView subTitleTextView = (TextView) view.findViewById(R.id.textview_subtitle);
-            ImageView imageSpeech = (ImageView) view.findViewById(R.id.cardview_icon_speech);
-            imageSpeech.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    boolean stop = NewsReader.getInstance().stopSpeech();
-                    if (stop) {
-                        stopEqualizerView();
-                    } else {
-
-                        NewsReader.getInstance().read(news);
-                    }
-                }
-            });
 
             loadImage(news, progressBar, imageNews);
             titleTextView.setText(news.title);
@@ -168,13 +154,4 @@ public class MainFragment extends BaseFragment {
         });
     }
 
-    @Subscribe
-    public void on(NewsReader.NewsStarted event) {
-        startEqualizerView();
-    }
-
-    @Subscribe
-    public void on(NewsReader.NewsEnded event) {
-        stopEqualizerView();
-    }
 }

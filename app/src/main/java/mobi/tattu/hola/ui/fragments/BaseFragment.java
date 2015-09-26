@@ -19,15 +19,4 @@ public abstract class BaseFragment extends Fragment {
         return (BaseActivity) getActivity();
     }
 
-    public void startEqualizerView(){
-        getBaseActivity().startEqualizerView();
-    }
-
-    public void stopEqualizerView(){
-        getBaseActivity().stopEqualizerView();
-    }
-
-    public void hideEqualizerView(){
-        getBaseActivity().hideEqualizarView();
-    }
 }
