@@ -30,6 +30,7 @@ import java.util.List;
 
 import mobi.tattu.hola.R;
 import mobi.tattu.hola.model.News;
+import mobi.tattu.hola.ui.HolaActivity;
 import mobi.tattu.utils.Tattu;
 
 public class SpeechRecognizerService extends Service {
@@ -280,6 +281,10 @@ public class SpeechRecognizerService extends Service {
 
                             mNextIdx = 0;
                             readNextFeed("Hola! Estas son tus noticias.");
+
+                            Intent i = new Intent(SpeechRecognizerService.this, HolaActivity.class);
+                            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(i);
                         } else {
                             Log.d(TAG, "read feed ignored");
                         }
@@ -308,17 +313,7 @@ public class SpeechRecognizerService extends Service {
                             Log.d(TAG, "read ignored");
                         }
                     } else if (contains(phrase, PARAR)) {
-                        if (mState != IDLE) {
-                            mState = IDLE;
-
-                            mNextIdx = 0;
-                            mCurrentNews = null;
-
-                            beep();
-                            nr.speak("Hasta Luego!", null);
-                        } else {
-                            Log.d(TAG, "stop ignored");
-                        }
+                        goToIdle();
                     }
                 } else {
                     Log.d(TAG, "No results");
@@ -333,6 +328,21 @@ public class SpeechRecognizerService extends Service {
         public void onRmsChanged(float rmsdB) {
         }
 
+    }
+    private void goToIdle() {
+        if (mState != IDLE) {
+            mState = IDLE;
+
+            mNextIdx = 0;
+            mCurrentNews = null;
+
+            beep();
+            nr.speak("Hasta Luego!", null);
+
+            Tattu.post(new Stop());
+        } else {
+            Log.d(TAG, "stop ignored");
+        }
     }
 
     private News mCurrentNews;
@@ -413,6 +423,17 @@ public class SpeechRecognizerService extends Service {
         } else {
             restartListening();
         }
+    }
+
+    @Subscribe
+    public void on(StopRecognition event) {
+        goToIdle();
+    }
+
+    public static class Stop {
+    }
+
+    public static class StopRecognition {
     }
 
 }

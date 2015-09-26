@@ -20,23 +20,22 @@ public class NewsDetailActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        hideEqualizarView();
-        mNews = (News)getIntent().getSerializableExtra(EXTRA_NEWS);
+        mNews = (News) getIntent().getSerializableExtra(EXTRA_NEWS);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        showFragment(NewsDetailFragment.newInstance(mNews),false);
+        showFragment(NewsDetailFragment.newInstance(mNews), false);
 
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_news_detail,menu);
+        getMenuInflater().inflate(R.menu.menu_news_detail, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.action_share:
                 shareTextUrl();
                 break;

@@ -4,14 +4,17 @@
                 android:layout_height="match_parent"
 
                 tools:context=".MainActivity">
-    <include layout="@layout/header"
-        android:id="@+id/header" />
-    <FrameLayout
+
+    <include
+        android:id="@+id/header"
+        layout="@layout/header"/>
+
+    <RelativeLayout
+        android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/header"
-        android:id="@+id/container">
+        android:layout_below="@+id/header">
 
-    </FrameLayout>
+    </RelativeLayout>
 
 </RelativeLayout>
