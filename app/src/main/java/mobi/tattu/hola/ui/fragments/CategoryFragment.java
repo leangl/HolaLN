@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -54,9 +55,13 @@ public class CategoryFragment extends BaseFragment {
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DataStore.getInstance().deleteAll(Category.class);
-                saveCategoriesSelected();
-                startActivity(new Intent(getBaseActivity(), MainActivity2.class));
+                if(mCategoriesSelected.isEmpty()){
+                    Toast.makeText(getBaseActivity(),R.string.message_error_category,Toast.LENGTH_SHORT).show();
+                }else{
+                    DataStore.getInstance().deleteAll(Category.class);
+                    saveCategoriesSelected();
+                    startActivity(new Intent(getBaseActivity(), MainActivity2.class));
+                }
             }
         });
         return view;

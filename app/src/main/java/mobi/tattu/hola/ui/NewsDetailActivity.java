@@ -7,6 +7,7 @@ import android.view.MenuItem;
 
 import mobi.tattu.hola.R;
 import mobi.tattu.hola.model.News;
+import mobi.tattu.hola.ui.fragments.NewsDetailFragment;
 
 /**
  * Created by cristian on 25/09/15.
@@ -19,9 +20,11 @@ public class NewsDetailActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        hideEqualizarView();
         mNews = (News)getIntent().getSerializableExtra(EXTRA_NEWS);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        showFragment(NewsDetailFragment.newInstance(mNews),false);
 
     }
 

@@ -34,4 +34,9 @@ public class News implements Serializable,Comparable<Category> {
     public int compareTo(Category category) {
         return category.compareTo(category);
     }
+
+    @Override
+    public String toString() {
+        return  title +" " +subTitle +" "+ content;
+    }
 }

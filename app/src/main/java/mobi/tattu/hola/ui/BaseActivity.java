@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
+import es.claucookie.miniequalizerlibrary.EqualizerView;
 import mobi.tattu.hola.R;
 
 /**
@@ -16,6 +17,7 @@ import mobi.tattu.hola.R;
 public abstract class BaseActivity extends AppCompatActivity {
 
     private Toolbar mToolbar;
+    private EqualizerView mEqualizerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,7 +25,8 @@ public abstract class BaseActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         this.mToolbar = (Toolbar) findViewById(R.id.toolbar);
         if (mToolbar != null) {
-
+            mEqualizerView = (EqualizerView) findViewById(R.id.equalizer_view);
+            mEqualizerView.setVisibility(View.VISIBLE);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 mToolbar.setTitleTextColor(getResources().getColor(android.R.color.white, getTheme()));
             } else {
@@ -48,6 +51,18 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     public void hideToolbar(){
         mToolbar.setVisibility(View.GONE);
+    }
+
+    public void stopEqualizerView(){
+        mEqualizerView.stopBars();
+    }
+
+    public void startEqualizerView(){
+        mEqualizerView.animateBars();
+    }
+
+    public void hideEqualizarView(){
+        mEqualizerView.setVisibility(View.GONE);
     }
 
 }
