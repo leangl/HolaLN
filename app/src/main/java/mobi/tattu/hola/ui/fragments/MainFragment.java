@@ -106,7 +106,7 @@ public class MainFragment extends BaseFragment {
 
             loadImage(news, progressBar, imageNews);
             titleTextView.setText(news.title);
-            subTitleTextView.setText(news.subTitle);
+            subTitleTextView.setText(news.category.getNameCategory(getActivity()));
             view.setTag(news);
             view.setOnClickListener(new View.OnClickListener() {
                 @Override

@@ -49,6 +49,7 @@ public class NewsDetailActivity extends BaseActivity {
     private void shareTextUrl() {
         Intent share = new Intent(android.content.Intent.ACTION_SEND);
         share.putExtra(Intent.EXTRA_TEXT, mNews.urlNews);
+        share.setType("text/plain");
         startActivity(Intent.createChooser(share, getString(R.string.share_news_label)));
     }
 }

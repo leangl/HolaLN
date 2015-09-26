@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 
 import mobi.tattu.hola.R;
+import mobi.tattu.hola.service.NewsReader;
 import mobi.tattu.hola.ui.HolaLaNacionApplication;
 
 public class PushReceiver extends BroadcastReceiver {
@@ -19,11 +20,13 @@ public class PushReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Notification n = new NotificationCompat.Builder(context)
                 .setContentTitle("Último Momento")
-                .setContentText("Choque fatal en Panamericana")
+                .setContentText(NewsReader.newsNotification.title)
                 .setSmallIcon(R.mipmap.ic_launcher)
+                //.setSound()
                 .build();
+
         NotificationManager nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        nm.notify(123, n);
+        nm.notify(321, n);
 
         HolaLaNacionApplication.mPush = true;
     }

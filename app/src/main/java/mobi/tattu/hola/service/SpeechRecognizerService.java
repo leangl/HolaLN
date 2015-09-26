@@ -318,8 +318,9 @@ public class SpeechRecognizerService extends Service {
                         goToIdle("Hasta Luego!");
                     } else if (contains(phrase, ULTIMA) || contains(phrase, NOTICIA)) {
                         if (HolaLaNacionApplication.mPush) {
+                            mState = NEWS;
                             beep();
-                            
+                            nr.read(NewsReader.newsNotification);
                         }
                     }
                 } else {
