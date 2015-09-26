@@ -1,7 +1,10 @@
 package mobi.tattu.hola.ui;
 
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 
+import mobi.tattu.hola.R;
 import mobi.tattu.hola.ui.fragments.CategoryFragment;
 
 /**
@@ -12,7 +15,24 @@ public class CategoryActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         hideToolbar();
-        showFragment(CategoryFragment.newInstance(),false);
+        hideEqualizarView();
+        showFragment(CategoryFragment.newInstance(), false);
+    }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.action_category:
+                break;
+
+
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

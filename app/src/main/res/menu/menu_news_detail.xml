@@ -6,5 +6,5 @@
           android:title="@string/share_label"
           android:orderInCategory="100"
         android:icon="@android:drawable/ic_menu_share"
-          app:showAsAction="never"/>
+          app:showAsAction="always"/>
 </menu>
