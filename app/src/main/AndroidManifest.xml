@@ -17,7 +17,8 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".ui.SplashActivity"
-            android:noHistory="true">
+            android:noHistory="true"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -27,15 +28,19 @@
 
         <service android:name=".service.SpeechRecognizerService"/>
 
-        <activity android:name=".ui.MainActivity2"/>
+        <activity
+            android:name=".ui.MainActivity2"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".ui.CategoryActivity"
-            android:noHistory="true"/>
+            android:noHistory="true"
+            android:screenOrientation="portrait"/>
         <activity android:name=".ui.NewsDetailActivity"/>
         <activity
             android:name=".ui.HolaActivity"
             android:excludeFromRecents="true"
             android:launchMode="singleInstance"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Translucent"/>
 
         <receiver

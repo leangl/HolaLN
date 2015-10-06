@@ -9,7 +9,6 @@ import android.os.Build;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
-import android.os.RemoteException;
 import android.util.Log;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -61,11 +60,12 @@ public class HolaLaNacionApplication extends Application {
             Message msg = new Message();
             msg.what = SpeechRecognizerService.MSG_RECOGNIZER_START_LISTENING;
 
-            try {
-                mServiceMessenger.send(msg);
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
+//            try {
+//                mServiceMessenger.send(msg);
+//            } catch (RemoteException e) {
+//                e.printStackTrace();
+//            }
+            Tattu.post(new SpeechRecognizerService.Start());
         }
 
         @Override

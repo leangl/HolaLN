@@ -34,8 +34,7 @@ public class HolaActivity extends AppCompatActivity {
         mPowerManager = (PowerManager) getSystemService(POWER_SERVICE);
 
         rippleBackground = (RippleBackground) findViewById(R.id.content);
-        rippleBackground.stopRippleAnimation();
-        //rippleBackground.startRippleAnimation();
+        rippleBackground.startRippleAnimation();
 
         turnOnScreen();
 

@@ -120,9 +120,8 @@ public class SpeechRecognizerService extends Service {
                             target.mIsStreamSolo = true;
                         }
                     }
-                    if (!target.mIsListening) {
+                    if (target.mIsListening) {
                         target.mSpeechRecognizer.startListening(target.mSpeechRecognizerIntent);
-                        target.mIsListening = true;
                         Log.d(TAG, "message start listening");
                     }
                     break;
@@ -131,9 +130,10 @@ public class SpeechRecognizerService extends Service {
                         target.mAudioManager.setStreamSolo(AudioManager.STREAM_VOICE_CALL, false);
                         target.mIsStreamSolo = false;
                     }
-                    target.mSpeechRecognizer.cancel();
-                    target.mIsListening = false;
-                    Log.d(TAG, "message canceled recognizer");
+                    if (!target.mIsListening) {
+                        target.mSpeechRecognizer.cancel();
+                        Log.d(TAG, "message canceled recognizer");
+                    }
                     break;
             }
         }
@@ -164,8 +164,8 @@ public class SpeechRecognizerService extends Service {
             mNoSpeechCountDown.cancel();
         }
         if (mIsListening) {
-            mIsListening = false;
             try {
+                mIsListening = false;
                 Message message = Message.obtain(null, MSG_RECOGNIZER_CANCEL);
                 mServerMessenger.send(message);
             } catch (RemoteException e) {
@@ -177,6 +177,7 @@ public class SpeechRecognizerService extends Service {
 
     private void startListening() {
         if (!mIsListening) {
+            mIsListening = true;
             try {
                 Message message = Message.obtain(null, MSG_RECOGNIZER_START_LISTENING);
                 mServerMessenger.send(message);
@@ -202,7 +203,6 @@ public class SpeechRecognizerService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         Log.d(TAG, "onBind");
-
         return mServerMessenger.getBinder();
     }
 
@@ -321,6 +321,8 @@ public class SpeechRecognizerService extends Service {
                             mState = NEWS;
                             beep();
                             nr.read(NewsReader.newsNotification);
+                        } else {
+                            nr.speak("No hay últimas noticias", null);
                         }
                     }
                 } else {
@@ -393,6 +395,7 @@ public class SpeechRecognizerService extends Service {
     }
 
     private void restartListening() {
+        Log.d(TAG, "restartListening");
         stopListening();
         mHandler.postDelayed(new Runnable() {
             @Override
@@ -435,7 +438,15 @@ public class SpeechRecognizerService extends Service {
         goToIdle("Hasta Luego!");
     }
 
+    @Subscribe
+    public void on(Start event) {
+        restartListening();
+    }
+
     public static class Stop {
+    }
+
+    public static class Start {
     }
 
     public static class StopRecognition {

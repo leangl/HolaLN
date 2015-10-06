@@ -6,6 +6,8 @@ import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -120,6 +122,12 @@ public class NewsReader {
             }
 
         }
+        Collections.sort(newsList, new Comparator<News>() {
+            @Override
+            public int compare(News news, News t1) {
+                return news.title.compareTo(t1.title);
+            }
+        });
         return newsList;
 
     }

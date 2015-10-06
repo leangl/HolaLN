@@ -70,11 +70,8 @@ public class MainFragment extends BaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mNewsArrayList = new ArrayList<>();
-        searchNewsCategory(NewsReader.getInstance().getNews());
+        mNewsArrayList = NewsReader.getInstance().getNews();
         Tattu.register(this);
-
-
     }
 
     private void searchNewsCategory(List<News> newsList) {
